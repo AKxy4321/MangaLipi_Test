@@ -22,6 +22,8 @@
 # # Visualize the results
 # image = Image.open(image_path).convert('RGB')
 
+# this code is not working on my machine 
+
 
 from paddleocr import PaddleOCR, draw_ocr
 from PIL import Image
@@ -37,7 +39,7 @@ class OCR:
         texts = [line[1][0] for line in result[0]]
         return OCR_Response(boxes=boxes, texts=texts)
     
-    
+
 
 
 
