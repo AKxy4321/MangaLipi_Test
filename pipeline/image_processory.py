@@ -262,7 +262,8 @@ class OCR:
         for font_size in range(max_font_size, 0, -1):
             font = ImageFont.truetype(font_path, font_size)
             # Initial wrap based on bounding box width
-            lines = textwrap.wrap(text, width=int(w / draw.textbbox((0, 0), ' ', font=font)[2]))
+            denominator = draw.textbbox((0, 0), ' ', font=font)[2]
+            lines = textwrap.wrap(text, width=int(w / (denominator if denominator != 0 else 1)))
             wrapped_lines = []
             for line in lines:
                 # Further wrap each line if it exceeds the bounding box width
@@ -286,7 +287,7 @@ class OCR:
 
 
     def translate_and_write(self, merged_boxes, white_image):
-        # font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
+        font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
         translated_image = white_image.copy()
 
         translated_image = Image.fromarray(translated_image)
