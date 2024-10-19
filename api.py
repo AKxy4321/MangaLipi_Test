@@ -26,7 +26,7 @@ def translate(Request : TranslateRequest):
 def get_manga_list():
     data_dir = 'data/images'
     folders = [name for name in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, name))]
-    return {"chapters": folders}
+    return {"chapters": {}}
 
 @app.post('/v1/api/submit/manga')
 def submit_manga(Request : MangaRequest):

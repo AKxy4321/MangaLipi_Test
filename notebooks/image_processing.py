@@ -77,7 +77,7 @@ class OCR:
 ocr = OCR()
 
 # Read the image
-image_path = 'data/images/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-93/17.jpg'
+image_path = 'data/images/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95/38.jpg'
 image = cv2.imread(image_path)
 
 # Perform OCR on the image
