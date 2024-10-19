@@ -176,15 +176,9 @@ class MangaScraper:
 # manga_scraper = MangaScraper()
 # url = "https://mangapill.com/chapters/2067-10093000/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-93"
 # if(manga_scraper.scrape_manga_pill(url)):
-<<<<<<< HEAD
-#     print("Manga has been scraped successfully")
-# else:
-#     print("An error occurred while scraping the manga")
-=======
     # print("Manga has been scraped successfully")
 # else:
     # print("An error occurred while scraping the manga")
->>>>>>> c59d935508afccdcdc702d6f510b7dec45b2a604
 
 
 

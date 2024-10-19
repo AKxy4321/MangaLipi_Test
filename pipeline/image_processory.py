@@ -334,36 +334,36 @@ class OCR:
 
 
 
-ocr = OCR()
-ocr.translate_image('data/images/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95/12.jpg')
+# ocr = OCR()
+# ocr.translate_image('./manga.jpg')
 
 
-# Initialize OCR
-ocr = OCR()
+# # Initialize OCR
+# ocr = OCR()
 
-# Read the image
-image_path = 'data/images/rocket.png'
-image = cv2.imread(image_path)
+# # Read the image
+# image_path = 'manga.jpg'
+# image = cv2.imread(image_path)
 
-# Perform OCR on the image
-response = ocr.get_ocr(image_path)
-merged_boxes = ocr.merge_boxes(response, line_by_line=True)
+# # Perform OCR on the image
+# response = ocr.get_ocr(image_path)
+# merged_boxes = ocr.merge_boxes(response, line_by_line=True)
 
-# Draw the bounding boxes on the image
-real_image = image.copy()
+# # Draw the bounding boxes on the image
+# real_image = image.copy()
 
-for box in merged_boxes:
-    x1, y1, x2, y2 = box[-4:]
-    cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
+# for box in merged_boxes:
+#     x1, y1, x2, y2 = box[-4:]
+#     cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
-# Save the image with merged bounding boxes
-cv2.imwrite('merged.jpg', image)
-
-
+# # Save the image with merged bounding boxes
+# cv2.imwrite('merged.jpg', image)
 
 
 
-untexted_image = ocr.draw_boxes(real_image, response.boxes)
-ocr.translate_and_write(merged_boxes=merged_boxes, white_image=untexted_image)
+
+
+# untexted_image = ocr.draw_boxes(real_image, response.boxes)
+# ocr.translate_and_write(merged_boxes=merged_boxes, white_image=untexted_image)
 
 

@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import UploadFile, File
 from PIL import Image
 from io import BytesIO
+from uuid import uuid4
 
 app = FastAPI()
 
@@ -30,7 +31,7 @@ app.add_middleware(
 )
 
 llm = LLM()
-app.mount("/static", StaticFiles(directory="frontend", html=True), name="frontend")
+app.mount("/static", StaticFiles(directory="static", html=True), name="frontend")
 
 @app.get('/v1/api/health')
 def health_check():
@@ -55,32 +56,30 @@ def get_manga_list():
 
 @app.post('/v1/api/submit/manga')
 async def submit_manga(file: UploadFile = File(...)):
+
+    file_extension = file.filename.split('.')[-1]
+    if file_extension.lower() not in ['jpg', 'jpeg', 'png']:
+        raise HTTPException(status_code=400, detail="Invalid file format. Only jpg, jpeg, and png are allowed.")
+    
+    filename = "static/" + str(uuid4()) + '.' + file_extension
+
     try:
         contents = await file.read()
-        # contents is in bytes
 
-
-        # Convert the uploaded file content to a PIL image
         try:
             image = Image.open(BytesIO(contents))
         except Exception as e:
             raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
         
-
-        image.save('manga.jpg')
+        image.save(filename)
 
         try:
-            ocr_response = await ocr.translate_image('manga.jpg')
+            ocr_response = ocr.translate_image(filename)
         except Exception as e:
             raise HTTPException(status_code=502, detail=f"Error during OCR processing: {str(e)}")
 
+        ocr_response.save(filename)
 
-
-        try:
-            encoded_image = base64.b64encode(ocr_response).decode('utf-8')
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error encoding image: {str(e)}")
-
-        return {"encoded_image": encoded_image}
+        return {"encoded_image": filename}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
