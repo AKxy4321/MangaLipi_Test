@@ -10,3 +10,9 @@ class BoundingBox(BaseModel):
     y1: int
     x2: int
     y2: int
+
+class TranslateRequest(BaseModel):
+    text: str
+    source_lang: str
+    target_lang: str
+
