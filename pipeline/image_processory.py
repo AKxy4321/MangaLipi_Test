@@ -75,8 +75,8 @@ class LLM:
 
         """
 
-        processed_text = self._preprocess_sentence(raw_text=raw_text)
-        print(processed_text)
+        # processed_text = self._preprocess_sentence(raw_text=raw_text)
+        # print(processed_text)
         return self.client.chat.completions.create(
             messages=[
                 {
@@ -85,7 +85,7 @@ class LLM:
                 },
                 {
                     "role": "user",
-                    "content": processed_text,
+                    "content": raw_text,
                 }
             ],
             model="llama3-70b-8192",
@@ -255,38 +255,128 @@ class OCR:
 
         return merged_boxes
     
-    def draw_text_in_rectangle(self, image, text, font_path, box, max_font_size):
-        draw = ImageDraw.Draw(image)
-        x1, y1, x2, y2 = box
-        w, h = x2 - x1, y2 - y1
-        if w > 0 and h > 0:
-            for font_size in range(max_font_size, 0, -1):
-                font = ImageFont.truetype(font_path, font_size)
-                # Initial wrap based on bounding box width
-                denominator = draw.textbbox((0, 0), ' ', font=font)[2]
-                width = int(w / (denominator if denominator != 0 else 1))
-                width = width if width > 0 else 1
-                lines = textwrap.wrap(text, width=width)
-                wrapped_lines = []
-                for line in lines:
-                    # Further wrap each line if it exceeds the bounding box width
-                    while draw.textbbox((0, 0), line, font=font)[2] > w:
-                        split_index = line.rfind(' ', 0, int(len(line) * w / draw.textbbox((0, 0), line, font=font)[2]))
-                        if split_index == -1:
-                            break
-                        wrapped_lines.append(line[:split_index])
-                        line = line[split_index + 1:]
-                    wrapped_lines.append(line)
+    # def draw_text_in_rectangle(self, image, text, font_path, box, max_font_size):
+    #     draw = ImageDraw.Draw(image)
+    #     x1, y1, x2, y2 = box
+    #     w, h = x2 - x1, y2 - y1
+    #     if w > 0 and h > 0:
+    #         for font_size in range(max_font_size, 0, -1):
+    #             font = ImageFont.truetype(font_path, font_size)
+    #             # Initial wrap based on bounding box width
+    #             denominator = draw.textbbox((0, 0), ' ', font=font)[2]
+    #             width = int(w / (denominator if denominator != 0 else 1))
+    #             width = width if width > 0 else 1
+    #             lines = textwrap.wrap(text, width=width)
+    #             wrapped_lines = []
+    #             for line in lines:
+    #                 # Further wrap each line if it exceeds the bounding box width
+    #                 while draw.textbbox((0, 0), line, font=font)[2] > w:
+    #                     split_index = line.rfind(' ', 0, int(len(line) * w / draw.textbbox((0, 0), line, font=font)[2]))
+    #                     if split_index == -1:
+    #                         break
+    #                     wrapped_lines.append(line[:split_index])
+    #                     line = line[split_index + 1:]
+    #                 wrapped_lines.append(line)
                 
-                total_text_height = sum([draw.textbbox((0, 0), line, font=font)[3] for line in wrapped_lines])
-                if total_text_height <= h:
-                    y_offset = y1 + (h - total_text_height) // 2
-                    for line in wrapped_lines:
-                        line_width, line_height = draw.textbbox((0, 0), line, font=font)[2], draw.textbbox((0, 0), line, font=font)[3]
-                        draw.text(((x1 + (w - line_width) // 2), y_offset), line, font=font, fill="black")
-                        y_offset += line_height
-                    break
+    #             total_text_height = sum([draw.textbbox((0, 0), line, font=font)[3] for line in wrapped_lines])
+    #             if total_text_height <= h:
+    #                 y_offset = y1 + (h - total_text_height) // 2
+    #                 for line in wrapped_lines:
+    #                     line_width, line_height = draw.textbbox((0, 0), line, font=font)[2], draw.textbbox((0, 0), line, font=font)[3]
+    #                     draw.text(((x1 + (w - line_width) // 2), y_offset), line, font=font, fill="black")
+    #                     y_offset += line_height
+    #                 break
+    #     return image
+
+    def draw_text_in_rectangle(self, original_image, text, font_path, box, max_font_size):
+        if not text:
+            return original_image
+
+        max_box_width = box[2] - box[0]
+        max_box_height = box[3] - box[1]
+        print("draw_text_in_rectangle : text :", text)
+
+        image = original_image.copy()
+
+        for current_font_size in range(max_font_size, 0, -1):
+            image = original_image.copy()
+            
+            font = ImageFont.truetype(font_path, current_font_size)
+
+            wrapped_lines = self.get_wrapped_lines(text, max_box_width, ImageDraw.Draw(image), font)
+
+            max_paragraph_width_with_font = max([font.getbbox(line)[2] for line in wrapped_lines])
+            max_paragraph_height_with_font = sum([font.getbbox(line)[3] for line in wrapped_lines])
+
+            print(f"draw_text_in_rectangle : max_line_width_with_font : {max_paragraph_width_with_font}, max_paragraph_height_with_font : {max_paragraph_height_with_font}")
+            print(f"original text : {text}, wrapped_lines : {wrapped_lines}")
+            if max_paragraph_width_with_font > max_box_width or max_paragraph_height_with_font > max_box_height:
+                print(f"draw_text_in_rectangle with font size {current_font_size} text too long")
+                continue
+
+            print("draw_text_in_rectangle successful : wrapped_lines :", wrapped_lines)
+            image = self.write_texts(image, wrapped_lines, font, box, max_font_size)
+
+            break
+
         return image
+    
+    def write_texts(self, image, texts, font, box, max_font_size):
+        l, u, r, d = font.getbbox(texts[0])
+        first_text_width = r - l
+        first_text_height = d - u
+
+        box_height = box[3] - box[1]
+        box_width = box[2] - box[0]
+
+        y_start = box[1] + box_height / 2 - first_text_height / 2 - (first_text_height / 2) * len(texts)
+
+        draw = ImageDraw.Draw(image)
+
+        for text in texts:
+            l, u, r, d = font.getbbox(text)
+            text_width = r - l
+            text_height = d - u
+
+            x_start = box[0] + box_width / 2 - text_width / 2
+
+            draw.text((x_start, y_start), text, font=font, fill="black")
+            y_start += text_height
+            
+        return image
+
+    def get_wrapped_lines(self, text, max_width, draw, font):
+        words = text.split(" ")
+        line = ""
+        wrapped_lines = []
+
+        if len(words) <= 1:
+            return [text if text else '']
+        
+
+        for i in range(len(words)):
+            word = words[i]
+
+            if i==0:
+                line = word
+                continue
+            
+            line += (" " if line else "") + word
+
+            l, u, r, d = font.getbbox(line)
+
+            width_line = r - l
+
+            if width_line > max_width:
+                wrapped_lines.append(line[:-len(word) - 1])
+                
+                line = word
+
+        if line:
+            wrapped_lines.append(line)
+
+        return wrapped_lines
+
 
 
     def translate_and_write(self, merged_boxes, white_image):
