@@ -31,3 +31,4 @@ def get_manga_list():
 @app.post('/v1/api/submit/manga')
 def submit_manga(Request : MangaRequest):
     return {"status": "OK"}
+

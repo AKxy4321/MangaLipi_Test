@@ -49,3 +49,17 @@ class OCR:
                 texts.append(word_info[1][0])
         return OCR_Response(boxes=boxes, texts=texts)
     
+
+ocr = OCR()
+response = ocr.get_ocr('data/images/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95/36.jpg')
+
+# Load the image
+image = cv2.imread('data/images/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95/36.jpg')
+
+# Draw boxes around the text data
+for text, box in zip(response.texts, response.boxes):
+    print(f'Text: {text}, Box: {box}')
+    box = [tuple(map(int, point)) for point in box]
+    cv2.polylines(image, [np.array(box)], isClosed=True, color=(0, 255, 0), thickness=2)
+    # Write the image with boxes to a file
+cv2.imshow(image)
