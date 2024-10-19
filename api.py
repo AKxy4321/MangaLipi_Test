@@ -58,6 +58,7 @@ def get_manga_list():
 async def submit_manga(file: UploadFile = File(...)):
 
     file_extension = file.filename.split('.')[-1]
+
     if file_extension.lower() not in ['jpg', 'jpeg', 'png']:
         raise HTTPException(status_code=400, detail="Invalid file format. Only jpg, jpeg, and png are allowed.")
     
@@ -80,6 +81,6 @@ async def submit_manga(file: UploadFile = File(...)):
 
         ocr_response.save(filename)
 
-        return {"url": filename}
+        return {"url": f"http://localhost:8000/{filename}"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
