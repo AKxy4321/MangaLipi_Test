@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: MangaLipi_Test
+Version: 0.1.0
+Summary: A brief description of your project
+Home-page: https://github.com/yourusername/MangaLipi_Test
+Author: Your Name
+Author-email: your.email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

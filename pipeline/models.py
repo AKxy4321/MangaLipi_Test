@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List
 
+
 class OCR_Response(BaseModel):
     boxes: List[List[int]]
     texts: List[str]
@@ -24,4 +25,5 @@ class ScrapingObject(BaseModel):
     total_pages: int    
 
 class MangaRequest(BaseModel):
-    url: str
+    base64_image: str
+

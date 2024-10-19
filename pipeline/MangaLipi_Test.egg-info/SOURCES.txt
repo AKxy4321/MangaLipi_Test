@@ -1,0 +1,6 @@
+README.md
+setup.py
+MangaLipi_Test.egg-info/PKG-INFO
+MangaLipi_Test.egg-info/SOURCES.txt
+MangaLipi_Test.egg-info/dependency_links.txt
+MangaLipi_Test.egg-info/top_level.txt
