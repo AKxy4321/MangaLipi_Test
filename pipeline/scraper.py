@@ -137,13 +137,13 @@ class MangaScraper:
 
 
             try:
-                print("Creating directory : ", f'data/images/{scrapingObject.name}')
-                os.mkdir(f'data/images/{scrapingObject.name}')
+                dir_path = os.path.join('..', 'data', 'images', scrapingObject.name)
+                os.mkdir(dir_path)
             except OSError:
                 print ("Creation of the directory failed")
 
             try:
-                with open(f'data/images/{scrapingObject.name}/meta.json', 'wb') as f:
+                with open(os.path.join(dir_path, 'meta.json'), 'wb') as f:
                     f.write(scrapingObject.model_dump_json().encode())
 
             except OSError:
@@ -151,18 +151,22 @@ class MangaScraper:
 
 
 
-
+            saved_images = []
             
             for index in range(1,scrapingObject.total_pages + 1):
                 response = requests.get(scrapingObject.url.format(page_number=index), params=self.params, headers=self.headers)
                 response.raise_for_status()
-                with open(f'data/images/{scrapingObject.name}/{index}.{scrapingObject.image_format}', 'wb') as f:
+                img_path = os.path.join('..', "data", "images", scrapingObject.name, f"{index}.{scrapingObject.image_format}")
+                with open(img_path, 'wb') as f:
                     f.write(response.content)
+
+                saved_images.append(img_path)
 
             time.sleep(1)
 
                 
-            return True
+            return saved_images
+            
         except requests.RequestException as e:
             print(f"An error occurred while scraping: {e}")
             return False
@@ -172,9 +176,15 @@ class MangaScraper:
 # manga_scraper = MangaScraper()
 # url = "https://mangapill.com/chapters/2067-10093000/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-93"
 # if(manga_scraper.scrape_manga_pill(url)):
+<<<<<<< HEAD
 #     print("Manga has been scraped successfully")
 # else:
 #     print("An error occurred while scraping the manga")
+=======
+    # print("Manga has been scraped successfully")
+# else:
+    # print("An error occurred while scraping the manga")
+>>>>>>> c59d935508afccdcdc702d6f510b7dec45b2a604
 
 
 
