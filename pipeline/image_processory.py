@@ -8,6 +8,9 @@ import requests
 from PIL import ImageFont, ImageDraw
 import textwrap
 import time
+import os
+
+
 
 class LLM:
     """
@@ -301,7 +304,7 @@ class OCR:
         for current_font_size in range(max_font_size, 0, -1):
             image = original_image.copy()
             
-            font = ImageFont.truetype(font_path, current_font_size)
+            font = ImageFont.truetype(font_path, int(current_font_size))
 
             wrapped_lines = self.get_wrapped_lines(text, max_box_width, ImageDraw.Draw(image), font)
 
@@ -342,7 +345,7 @@ class OCR:
 
             draw.text((x_start, y_start), text, font=font, fill="black")
             y_start += text_height
-            
+
         return image
 
     def get_wrapped_lines(self, text, max_width, draw, font):
@@ -379,8 +382,9 @@ class OCR:
 
 
 
-    def translate_and_write(self, merged_boxes, white_image):
-        font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
+    def translate_and_write(self, merged_boxes, white_image, language):
+        font_path = f"../data/fonts/NotoSans{language}-Regular.ttf"
+        print(font_path, os.path.exists(font_path))
         translated_image = white_image.copy()
 
         translated_image = Image.fromarray(translated_image)
@@ -388,7 +392,7 @@ class OCR:
         for box in merged_boxes:
             x1, y1, x2, y2 = box[-4:]
             text = box[2]
-            translated_text = self.llm.translate(text, "english", "tamil")
+            translated_text = self.llm.translate(text, "english", f"{language}")
 
             ### comment this later time.sleep()
             # time.sleep(1)
@@ -416,11 +420,11 @@ class OCR:
         # Save the translated image
         translated_image.save('translated_image.jpg')
 
-    def translate_image(self, image_path):
+    def translate_image(self, image_path, language):
         response = self.get_ocr(image_path)
         merged_boxes = self.merge_boxes(response, line_by_line=False)
         untexted_image = self.draw_boxes(cv2.imread(image_path), response.boxes)
-        reponseImage = self.translate_and_write(merged_boxes=merged_boxes, white_image=untexted_image)
+        reponseImage = self.translate_and_write(merged_boxes=merged_boxes, white_image=untexted_image, language=language)
         return reponseImage
     
     def translate_base64_image(self, base64_image):
