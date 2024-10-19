@@ -7,6 +7,7 @@ from groq import Groq
 import requests
 from PIL import ImageFont, ImageDraw
 import textwrap
+import time
 
 class LLM:
     """
@@ -282,7 +283,7 @@ class OCR:
 
 
     def translate_and_write(self, merged_boxes, white_image):
-        font_path = "/data/fonts/NotoSansTamil-Regular.ttf"
+        font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
         translated_image = white_image.copy()
 
         translated_image = Image.fromarray(translated_image)
@@ -291,16 +292,19 @@ class OCR:
             x1, y1, x2, y2 = box[-4:]
             text = box[2]
             translated_text = self.llm.translate(text, "english", "tamil")
+
+            ### comment this later time.sleep()
+            time.sleep(1)
             print(text, translated_text)
             translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), 10)
             print("Iteration")
         # Save the translated image
-        translated_image.save('translated_image.jpg')
+        # translated_image.save('translated_image.jpg')
 
         return translated_image
 
     def translate_and_write_sarvam(self, merged_boxes, white_image):
-        font_path = "/data/fonts/NotoSansTamil-Regular.ttf"
+        font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
         translated_image = white_image.copy()
 
         translated_image = Image.fromarray(translated_image)
