@@ -150,10 +150,13 @@ class OCR:
         result = self.ocr.ocr(image_path, cls=True)
         boxes = []
         texts = []
-        for line in result:
-            for word_info in line:
-                boxes.append(word_info[0])
-                texts.append(word_info[1][0])
+
+        if result:
+            for line in result:
+                if line:
+                    for word_info in line:
+                        boxes.append(word_info[0])
+                        texts.append(word_info[1][0])
 
         # Draw all the bounding boxes on the image
         image = cv2.imread(image_path)
