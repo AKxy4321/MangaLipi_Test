@@ -142,6 +142,16 @@ class MangaScraper:
             except OSError:
                 print ("Creation of the directory failed")
 
+            try:
+                with open(f'data/images/{scrapingObject.name}/meta.json', 'wb') as f:
+                    f.write(scrapingObject.model_dump_json().encode())
+
+            except OSError:
+                print ("Creation of the meta file failed")
+
+
+
+
             
             for index in range(1,scrapingObject.total_pages + 1):
                 response = requests.get(scrapingObject.url.format(page_number=index), params=self.params, headers=self.headers)
@@ -159,11 +169,11 @@ class MangaScraper:
 
 
 
-# manga_scraper = MangaScraper()
-# if(manga_scraper.scrape_manga_pill('https://mangapill.com/chapters/2067-10095000/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95')):
-#     print("Manga has been scraped successfully")
-# else:
-#     print("An error occurred while scraping the manga")
+manga_scraper = MangaScraper()
+if(manga_scraper.scrape_manga_pill('https://mangapill.com/chapters/2067-10095000/jojo-no-kimyou-na-bouken-part-7-steel-ball-run-chapter-95')):
+    print("Manga has been scraped successfully")
+else:
+    print("An error occurred while scraping the manga")
 
 
 

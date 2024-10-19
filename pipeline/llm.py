@@ -1,4 +1,5 @@
 from groq import Groq
+import requests
 
 class LLM:
     """
@@ -81,3 +82,38 @@ class LLM:
             model="llama3-70b-8192",
         ).choices[0].message.content    
     
+
+    def translate_sarvam(self, raw_text, source_language, target_language) -> str:
+        """
+        Translates the given raw text from the source language to the target language.
+
+        Args:
+            raw_text (str): The text to be translated.
+            source_language (str): The language of the input text.
+            target_language (str): The language to translate the text into.
+
+        Returns:
+            str: The translated text.
+
+        """
+
+        
+        url = "https://api.sarvam.ai/translate"
+
+        payload = {
+            "model": "mayura:v1",
+            "enable_preprocessing": True,
+            "source_language_code": source_language,
+            "target_language_code": target_language,
+            "mode": "code-mixed",
+            "input": raw_text
+        }
+        headers = {
+            "api-subscription-key": "223f1de5-2860-4900-b3bb-e733ad9653a8",
+            "Content-Type": "application/json"
+        }
+
+        response = requests.request("POST", url, json=payload, headers=headers)
+        return response.text
+    
+

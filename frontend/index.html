@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Mangalipi | Manga in Your Language </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+</head>
+<body>
+    <body class="bg-gray-100 font-sans">
+        <!-- Navbar -->
+        <nav class="bg-white shadow-md py-4">
+          <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-indigo-600">MangaLipi</h1>
+            <ul class="flex space-x-6">
+              <li><a href="#" class="text-gray-600 hover:text-indigo-600">Home</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-indigo-600">Manga Collection</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-indigo-600">Languages</a></li>
+              <li><a href="#" class="text-gray-600 hover:text-indigo-600">About</a></li>
+            </ul>
+          </div>
+        </nav>
+      
+        <!-- Hero Section -->
+        <section class="bg-indigo-600 text-white py-20">
+          <div class="container mx-auto text-center">
+            <h2 class="text-5xl font-bold">Discover Manga in Your Language</h2>
+            <p class="mt-4 text-lg">Read popular manga translated into various Indian languages!</p>
+            <a href="#manga-section" class="mt-6 inline-block bg-white text-indigo-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-200">Browse Now</a>
+          </div>
+        </section>
+      
+        <!-- Manga Grid Section -->
+        <section id="manga-section" class="py-16">
+          <div class="container mx-auto">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-8">Our Manga Collection</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              <!-- Single Manga Card -->
+              <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <img src="https://via.placeholder.com/150" alt="Manga Cover" class="w-full h-48 object-cover">
+                <div class="p-4">
+                  <h4 class="text-xl font-semibold">Manga Title</h4>
+                  <p class="text-gray-600 mt-2">Description of the manga goes here. This will give users an idea about the story.</p>
+                  <a href="#" class="block mt-4 text-indigo-600 hover:underline">Read More</a>
+                </div>
+              </div>
+              <!-- Repeat Manga Cards as needed -->
+              <!-- ... -->
+            </div>
+          </div>
+        </section>
+      
+        <!-- Languages Section -->
+        <section class="py-16 bg-gray-100">
+          <div class="container mx-auto text-center">
+            <h3 class="text-3xl font-semibold text-gray-800 mb-6">Select Your Language</h3>
+            <div class="flex flex-wrap justify-center gap-4">
+              <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">Hindi</button>
+              <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">Kannada</button>
+              <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">Bengali</button>
+              <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">Tamil</button>
+              <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700">Telugu</button>
+            </div>
+          </div>
+        </section>
+      
+        <!-- Footer -->
+        <footer class="bg-indigo-600 text-white py-6">
+          <div class="container mx-auto text-center">
+            <div class="mt-4">
+              <a href="#" class="text-white hover:text-gray-300">Privacy Policy</a> | 
+              <a href="#" class="text-white hover:text-gray-300">Terms of Service</a>
+            </div>
+          </div>
+        </footer>
+      </body>
+    
+</body>
+</html>

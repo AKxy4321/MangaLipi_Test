@@ -22,3 +22,6 @@ class TranslateResponse(BaseModel):
 class ScrapingObject(BaseModel):
     url: str
     total_pages: int    
+
+class MangaRequest(BaseModel):
+    url: str
