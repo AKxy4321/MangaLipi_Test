@@ -137,10 +137,13 @@ class MangaScraper:
 
 
             try:
+                print(scrapingObject.name)
                 dir_path = os.path.join('..', 'data', 'images', scrapingObject.name)
+                print(f"dir_path: {dir_path}")
                 os.mkdir(dir_path)
-            except OSError:
+            except OSError as e:
                 print ("Creation of the directory failed")
+                print(e)
 
             try:
                 with open(os.path.join(dir_path, 'meta.json'), 'wb') as f:
@@ -157,6 +160,8 @@ class MangaScraper:
                 response = requests.get(scrapingObject.url.format(page_number=index), params=self.params, headers=self.headers)
                 response.raise_for_status()
                 img_path = os.path.join('..', "data", "images", scrapingObject.name, f"{index}.{scrapingObject.image_format}")
+                print("img_path: ", img_path)
+                img_path = img_path[:img_path.index('?')] if '?' in img_path else img_path
                 with open(img_path, 'wb') as f:
                     f.write(response.content)
 
