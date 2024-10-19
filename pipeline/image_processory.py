@@ -136,6 +136,7 @@ class OCR:
     def __init__(self):
         self.llm = LLM()
         self.ocr = PaddleOCR(use_angle_cls=True, use_gpu=False, lang='en')
+        self.max_font_size = 50
 
     def get_ocr(self, image_path: str) -> OCR_Response:
         """
@@ -258,31 +259,33 @@ class OCR:
         draw = ImageDraw.Draw(image)
         x1, y1, x2, y2 = box
         w, h = x2 - x1, y2 - y1
-
-        for font_size in range(max_font_size, 0, -1):
-            font = ImageFont.truetype(font_path, font_size)
-            # Initial wrap based on bounding box width
-            denominator = draw.textbbox((0, 0), ' ', font=font)[2]
-            lines = textwrap.wrap(text, width=int(w / (denominator if denominator != 0 else 1)))
-            wrapped_lines = []
-            for line in lines:
-                # Further wrap each line if it exceeds the bounding box width
-                while draw.textbbox((0, 0), line, font=font)[2] > w:
-                    split_index = line.rfind(' ', 0, int(len(line) * w / draw.textbbox((0, 0), line, font=font)[2]))
-                    if split_index == -1:
-                        break
-                    wrapped_lines.append(line[:split_index])
-                    line = line[split_index + 1:]
-                wrapped_lines.append(line)
-            
-            total_text_height = sum([draw.textbbox((0, 0), line, font=font)[3] for line in wrapped_lines])
-            if total_text_height <= h:
-                y_offset = y1 + (h - total_text_height) // 2
-                for line in wrapped_lines:
-                    line_width, line_height = draw.textbbox((0, 0), line, font=font)[2], draw.textbbox((0, 0), line, font=font)[3]
-                    draw.text(((x1 + (w - line_width) // 2), y_offset), line, font=font, fill="black")
-                    y_offset += line_height
-                break
+        if w > 0 and h > 0:
+            for font_size in range(max_font_size, 0, -1):
+                font = ImageFont.truetype(font_path, font_size)
+                # Initial wrap based on bounding box width
+                denominator = draw.textbbox((0, 0), ' ', font=font)[2]
+                width = int(w / (denominator if denominator != 0 else 1))
+                width = width if width > 0 else 1
+                lines = textwrap.wrap(text, width=width)
+                wrapped_lines = []
+                for line in lines:
+                    # Further wrap each line if it exceeds the bounding box width
+                    while draw.textbbox((0, 0), line, font=font)[2] > w:
+                        split_index = line.rfind(' ', 0, int(len(line) * w / draw.textbbox((0, 0), line, font=font)[2]))
+                        if split_index == -1:
+                            break
+                        wrapped_lines.append(line[:split_index])
+                        line = line[split_index + 1:]
+                    wrapped_lines.append(line)
+                
+                total_text_height = sum([draw.textbbox((0, 0), line, font=font)[3] for line in wrapped_lines])
+                if total_text_height <= h:
+                    y_offset = y1 + (h - total_text_height) // 2
+                    for line in wrapped_lines:
+                        line_width, line_height = draw.textbbox((0, 0), line, font=font)[2], draw.textbbox((0, 0), line, font=font)[3]
+                        draw.text(((x1 + (w - line_width) // 2), y_offset), line, font=font, fill="black")
+                        y_offset += line_height
+                    break
         return image
 
 
@@ -300,7 +303,7 @@ class OCR:
             ### comment this later time.sleep()
             # time.sleep(1)
             print(text, translated_text)
-            translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), 10)
+            translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), self.max_font_size)
             print("Iteration")
         # Save the translated image
         # translated_image.save('translated_image.jpg')
@@ -318,7 +321,7 @@ class OCR:
             text = box[2]
             translated_text = self.llm.translate_sarvam(text, "en", "kn")
             print(text, translated_text)
-            translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), 10)
+            translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), self.max_font_size)
             print("Iteration")
         # Save the translated image
         translated_image.save('translated_image.jpg')
