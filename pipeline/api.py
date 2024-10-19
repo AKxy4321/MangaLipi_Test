@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from pipeline.llm import LLM
 from pipeline.models import TranslateRequest
+
 app = FastAPI()
 llm = LLM()
 

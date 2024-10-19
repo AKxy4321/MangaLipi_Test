@@ -16,3 +16,10 @@ class TranslateRequest(BaseModel):
     source_lang: str
     target_lang: str
 
+class TranslateResponse(BaseModel):
+    text: str
+
+class ScrapingObject(BaseModel):
+    url: str
+    total_pages: int    
+    
