@@ -283,7 +283,7 @@ class OCR:
 
 
     def translate_and_write(self, merged_boxes, white_image):
-        font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
+        # font_path = "../data/fonts/NotoSansTamil-Regular.ttf"
         translated_image = white_image.copy()
 
         translated_image = Image.fromarray(translated_image)
@@ -294,7 +294,7 @@ class OCR:
             translated_text = self.llm.translate(text, "english", "tamil")
 
             ### comment this later time.sleep()
-            time.sleep(1)
+            # time.sleep(1)
             print(text, translated_text)
             translated_image = self.draw_text_in_rectangle(translated_image, translated_text, font_path, (x1, y1, x2, y2), 10)
             print("Iteration")
