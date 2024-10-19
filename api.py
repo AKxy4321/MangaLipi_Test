@@ -80,6 +80,6 @@ async def submit_manga(file: UploadFile = File(...)):
 
         ocr_response.save(filename)
 
-        return {"encoded_image": filename}
+        return {"url": filename}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
