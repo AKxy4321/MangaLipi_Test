@@ -3,5 +3,5 @@ __pycache__/
 *.pyc
 .env
 env
-data/images/*
+data/images/*/*
 *.zip
